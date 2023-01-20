@@ -29,7 +29,7 @@ export default function App() {
   return (
     <AuthContext.Provider value={authContext}>
     <NavigationContainer>
-      <StatusBar style="auto" />
+      <StatusBar backgroundColor="#fff" barStyle={"dark-content"} />
       <GlobalStack/>
       </NavigationContainer>
       </AuthContext.Provider>

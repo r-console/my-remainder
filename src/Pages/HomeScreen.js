@@ -15,7 +15,7 @@ import {
 import { buttonColor, submitButtonColor } from "../common/constant"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { useCallback, useContext, useEffect, useState } from "react"
-import DatePicker, { getFormatedDate } from "react-native-modern-datepicker"
+// import DatePicker, { getFormatedDate } from "react-native-modern-datepicker"
 import Todo from "../../assets/todo.png"
 import { AuthContext } from "../../AuthProvider"
 
@@ -24,11 +24,12 @@ const HomeScreen = () => {
   const [previous, setPrevious] = useState([])
   const { allCounts, setAllCounts, ctArr, setCtArr } = useContext(AuthContext)
 
-  const today = new Date()
-  const startDate = getFormatedDate(
-    today.setDate(today.getDate()),
-    "DD/MM/YYYY"
-  )
+  // for date picker
+  // const today = new Date()
+  // const startDate = getFormatedDate(
+  //   today.setDate(today.getDate()),
+  //   "DD/MM/YYYY"
+  // )
   const [isSaved, setSaved] = useState(false)
 
   // date time picker
@@ -126,7 +127,8 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Modal animationType="slide" transparent={true} visible={open}>
+      {/* this is for date picker */}
+      {/* <Modal animationType="slide" transparent={true} visible={open}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <DatePicker
@@ -140,7 +142,7 @@ const HomeScreen = () => {
             </TouchableOpacity>
           </View>
         </View>
-      </Modal>
+      </Modal> */}
       <ScrollView showsVerticalScrollIndicator={false}>
         <TextInput
           style={[
@@ -159,6 +161,7 @@ const HomeScreen = () => {
           placeholder="Type your message...."
           onChangeText={(val) => setInputText(val)}
         />
+        {/* date picker */}
         {/* <View style={{ marginTop: 5 }}>
           <Button title={`Schedule Date ${date}`} onPress={handleOnPress} />
         </View> */}

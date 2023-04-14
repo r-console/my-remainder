@@ -1,5 +1,5 @@
 {
-  "name": "myremainder",
+  "name": "myreminder",
   "version": "1.0.0",
   "scripts": {
     "start": "expo start --dev-client",

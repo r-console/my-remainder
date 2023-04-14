@@ -11,7 +11,7 @@ const Stack = createStackNavigator()
 const GlobalStack = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="My Remainder" component={BottomTab} />
+      <Stack.Screen name="My Reminder" component={BottomTab} />
       <Stack.Screen
         name="Todo"
         component={TodoDetails}

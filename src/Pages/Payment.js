@@ -192,7 +192,7 @@ const Payment = () => {
               marginTop: 15,
             }}
           >
-            Add Payment Remainder
+            Add Payment Reminder
           </Text>
         </View>
       </ScrollView>

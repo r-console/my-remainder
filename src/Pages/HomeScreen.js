@@ -16,7 +16,7 @@ import { buttonColor, submitButtonColor } from "../common/constant"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { useCallback, useContext, useEffect, useState } from "react"
 // import DatePicker, { getFormatedDate } from "react-native-modern-datepicker"
-import Todo from "../../assets/todo.png"
+import Todo from "../../assets/list.png"
 import { AuthContext } from "../../AuthProvider"
 
 const HomeScreen = () => {
@@ -94,7 +94,7 @@ const HomeScreen = () => {
       // if(type === 'thismonth') setAllCounts({...allCounts, ThisMonthCount:res.length})
       // if(type === 'monthend') setAllCounts({...allCounts, MonthEndCount:res.length})
       // if(type === 'others') setAllCounts({...allCounts, OthersCount:res.length})
-      console.log(res.length)
+      // console.log(res.length)
       let arr = []
       arr = ctArr
       arr[index] = res.length
@@ -155,11 +155,13 @@ const HomeScreen = () => {
           ]}
           numberOfLines={1}
           textAlign={"left"}
+          autoFocus={true}
           returnKeyType={"none"}
           multiline={true}
           value={inputText}
           placeholder="Type your message...."
           onChangeText={(val) => setInputText(val)}
+          onEndEditing={() => console.log("ending")}
         />
         {/* date picker */}
         {/* <View style={{ marginTop: 5 }}>
@@ -168,13 +170,22 @@ const HomeScreen = () => {
         <View style={styles.ButtonBox}>
           <View style={{ alignSelf: "center", width: "49%" }}>
             <Button
-              title="Today"
+              title="Important"
               style={styles.inputButton}
-              color={buttonColor}
-              onPress={() => storeData("Today", "today")}
+              color={submitButtonColor}
+              onPress={() => storeData("Important", "important")}
             />
           </View>
           <View style={{ alignSelf: "center", width: "49%" }}>
+            <Button
+              title="Other Notes"
+              style={styles.inputButton}
+              color={submitButtonColor}
+              onPress={() => storeData("Others", "others")}
+            />
+          </View>
+        </View>
+        {/* <View style={{ alignSelf: "center", width: "49%" }}>
             <Button
               title="Week List"
               style={styles.inputButton}
@@ -200,7 +211,7 @@ const HomeScreen = () => {
               onPress={() => storeData("Sunday", "sunday")}
             />
           </View>
-        </View>
+        </View> */}
         {/* <View style={styles.ButtonBox}>
           <View style={{ alignSelf: "center", width: "49%" }}>
             <Button
@@ -219,14 +230,6 @@ const HomeScreen = () => {
             />
           </View>
         </View> */}
-        <View style={{ width: "100%", marginTop: 10 }}>
-          <Button
-            title="Other Notes"
-            style={styles.inputButton}
-            color={submitButtonColor}
-            onPress={() => storeData("Others", "others")}
-          />
-        </View>
 
         <View style={{ flex: 1 }}>
           <Image source={Todo} style={styles.todoImg} />
@@ -261,13 +264,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
+    backgroundColor: "#fff",
   },
   inputBox: {
     backgroundColor: "#ddd",
     width: "100%",
     height: 150,
-    borderRadius: 10,
-    borderColor: "#000",
+    borderRadius: 5,
+    borderColor: "#999",
     borderWidth: 1,
   },
   ButtonBox: {
@@ -283,11 +287,12 @@ const styles = StyleSheet.create({
     color: "#00cc00",
   },
   todoImg: {
-    width: 170,
-    height: 170,
+    width: 230,
+    height: 230,
     justifyContent: "center",
     alignSelf: "center",
     marginTop: 50,
+    resizeMode: "contain",
   },
   centeredView: {
     flex: 1,

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useRef, useState } from "react"
 import {
   StyleSheet,
   ScrollView,
@@ -10,13 +10,15 @@ import {
   TouchableOpacity,
   Text,
   Image,
+  Keyboard,
 } from "react-native"
+import * as Speech from "expo-speech"
 import { iconSize, submitButtonColor } from "../common/constant"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { Ionicons } from "@expo/vector-icons"
 import Pay from "../../assets/pay.png"
 
-const Payment = () => {
+const Payment = ({ navigation }) => {
   const [amt, setAmt] = useState("")
   const [name, setName] = useState("")
   const [message, setMessage] = useState("")
@@ -69,10 +71,15 @@ const Payment = () => {
     }
   }
 
+  const input1Ref = useRef(null)
+  const input2Ref = useRef(null)
+  const input3Ref = useRef(null)
+
   return (
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <TextInput
+          ref={input1Ref}
           style={[
             styles.inputBox,
             {
@@ -82,14 +89,17 @@ const Payment = () => {
             },
           ]}
           numberOfLines={1}
+          autoFocus
           textAlign={"left"}
           returnKeyType={"none"}
           keyboardType="number-pad"
           value={amt}
           placeholder="Enter Amount...."
           onChangeText={(val) => setAmt(val)}
+          onSubmitEditing={() => input2Ref.current.focus()}
         />
         <TextInput
+          ref={input2Ref}
           style={[
             styles.inputBox2,
             {
@@ -100,13 +110,13 @@ const Payment = () => {
           ]}
           numberOfLines={1}
           textAlign={"left"}
-          returnKeyType={"none"}
-          multiline={true}
           value={name}
           placeholder="Enter Name"
           onChangeText={(val) => setName(val)}
+          onSubmitEditing={() => input3Ref.current.focus()}
         />
         <TextInput
+          ref={input3Ref}
           style={[
             styles.inputBox3,
             {
@@ -122,6 +132,7 @@ const Payment = () => {
           value={message}
           placeholder="Type your message...."
           onChangeText={(val) => setMessage(val)}
+          onSubmitEditing={() => Keyboard.dismiss()}
         />
         <View
           style={{
@@ -209,7 +220,7 @@ const styles = StyleSheet.create({
   },
   inputType: {
     borderRadius: 5,
-    borderColor: "#000",
+    borderColor: "#999",
     borderWidth: 1,
     padding: 7,
     fontSize: 16,
@@ -221,8 +232,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#ddd",
     width: "100%",
     height: 50,
-    borderRadius: 10,
-    borderColor: "#000",
+    borderRadius: 5,
+    borderColor: "#999",
     borderWidth: 1,
     marginBottom: 5,
   },
@@ -230,8 +241,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#ddd",
     width: "100%",
     height: 50,
-    borderRadius: 10,
-    borderColor: "#000",
+    borderRadius: 5,
+    borderColor: "#999",
     borderWidth: 1,
     marginBottom: 5,
   },
@@ -239,8 +250,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#ddd",
     width: "100%",
     height: 100,
-    borderRadius: 10,
-    borderColor: "#000",
+    borderRadius: 5,
+    borderColor: "#999",
     borderWidth: 1,
   },
   ButtonBox: {

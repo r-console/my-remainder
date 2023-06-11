@@ -68,6 +68,14 @@ const BottomTab = () => {
             </View>
           ),
         }}
+        listeners={({ navigation, route }) => ({
+          tabPress: (e) => {
+            // Prevent default action
+            e.preventDefault()
+            // Do something with the `navigation` object
+            navigation.navigate("addtodo")
+          },
+        })}
       />
       <Tab.Screen
         name="Pay"
@@ -96,6 +104,14 @@ const BottomTab = () => {
             </View>
           ),
         }}
+        listeners={({ navigation, route }) => ({
+          tabPress: (e) => {
+            // Prevent default action
+            e.preventDefault()
+            // Do something with the `navigation` object
+            navigation.navigate("AddPay")
+          },
+        })}
       />
     </Tab.Navigator>
   )

@@ -18,7 +18,7 @@ import {
   EvilIcons,
 } from "@expo/vector-icons"
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import Todo from "../../assets/list.png"
+import Todo from "../../assets/todo.png"
 import { AuthContext } from "../../AuthProvider"
 
 const ListPage = ({ navigation }) => {
@@ -78,7 +78,7 @@ const ListPage = ({ navigation }) => {
 
   const callFun = () => {
     console.log("counts")
-    getDataCounts(0, "today")
+    getDataCounts(0, "important")
     getDataCounts(1, "thisweek")
     getDataCounts(2, "saturday")
     getDataCounts(3, "sunday")
@@ -104,19 +104,49 @@ const ListPage = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View style={{ position: "absolute", bottom: 15, right: 15, zIndex: 9 }}>
+      <View
+        style={{
+          position: "absolute",
+          bottom: 20,
+          zIndex: 9,
+          alignSelf: "center",
+        }}
+      >
         <TouchableOpacity
-          style={{ backgroundColor: "#333", padding: 7, borderRadius: 10 }}
+          style={{
+            backgroundColor: "#fff",
+            borderWidth: 1,
+            padding: 10,
+            borderRadius: 50,
+          }}
           onPress={() => onRefresh()}
         >
-          <EvilIcons
+          <MaterialIcons
             name="refresh"
-            size={30}
-            color={"#ddd"}
+            size={25}
+            color={"#000"}
             style={{ alignSelf: "center" }}
           />
         </TouchableOpacity>
       </View>
+      {/* <View style={{ position: "absolute", bottom: 15, right: 15, zIndex: 9 }}>
+        <TouchableOpacity
+          style={{
+            backgroundColor: "#fff",
+            borderWidth: 1,
+            borderRadius: 50,
+            padding: 10,
+          }}
+          onPress={() => navigation.navigate("Chat")}
+        >
+          <Ionicons
+            name="md-chatbox-ellipses"
+            size={25}
+            color={"#000"}
+            style={{ alignSelf: "center" }}
+          />
+        </TouchableOpacity>
+      </View> */}
       <ScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={
@@ -173,124 +203,28 @@ const ListPage = ({ navigation }) => {
               {debtAmt}
             </Text>
           </View>
-          {/* <MaterialIcons name="keyboard-arrow-right" size={iconSize} color={submitButtonColor} style={{alignSelf:'center'}} /> */}
         </TouchableOpacity>
-        <Text>ToDo</Text>
-        <TouchableOpacity
-          style={styles.box}
-          onPress={() =>
-            navigation.navigate("Todo", { title: "Today", type: "today" })
-          }
-        >
-          <View style={{ flexDirection: "row" }}>
-            <Ionicons
-              name="today"
-              size={iconSize}
-              color={submitButtonColor}
-              style={{ alignSelf: "center" }}
-            />
-            <Text style={{ fontSize: textSize }}>{` `}Today</Text>
-          </View>
-          <Text style={styles.countText}>{ctArr[0] !== 0 ? ctArr[0] : ""}</Text>
-          {/* <MaterialIcons name="keyboard-arrow-right" size={iconSize} color={submitButtonColor} style={{alignSelf:'center'}} /> */}
-        </TouchableOpacity>
+        <Text>ToDo and Notes</Text>
         <TouchableOpacity
           style={styles.box}
           onPress={() =>
             navigation.navigate("Todo", {
-              title: "This Week",
-              type: "thisweek",
+              title: "Important",
+              type: "important",
             })
           }
         >
           <View style={{ flexDirection: "row" }}>
             <MaterialIcons
-              name="view-week"
+              name="priority-high"
               size={iconSize}
-              color={submitButtonColor}
+              color={"red"}
               style={{ alignSelf: "center" }}
             />
-            <Text style={{ fontSize: textSize }}>{` `}Week List</Text>
+            <Text style={{ fontSize: textSize }}>{` `}Important</Text>
           </View>
-          <Text style={styles.countText}>{ctArr[1] !== 0 ? ctArr[1] : ""}</Text>
-          {/* <MaterialIcons name="keyboard-arrow-right" size={iconSize} color={submitButtonColor} style={{alignSelf:'center'}} /> */}
+          <Text style={styles.countText}>{ctArr[0] !== 0 ? ctArr[0] : ""}</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.box}
-          onPress={() =>
-            navigation.navigate("Todo", { title: "Saturday", type: "saturday" })
-          }
-        >
-          <View style={{ flexDirection: "row" }}>
-            <MaterialCommunityIcons
-              name="calendar-weekend"
-              size={iconSize}
-              color={submitButtonColor}
-              style={{ alignSelf: "center" }}
-            />
-            <Text style={{ fontSize: textSize }}>{` `}Saturday</Text>
-          </View>
-          <Text style={styles.countText}>{ctArr[2] !== 0 ? ctArr[2] : ""}</Text>
-          {/* <MaterialIcons name="keyboard-arrow-right" size={iconSize} color={submitButtonColor} style={{alignSelf:'center'}} /> */}
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.box}
-          onPress={() =>
-            navigation.navigate("Todo", { title: "Sunday", type: "sunday" })
-          }
-        >
-          <View style={{ flexDirection: "row" }}>
-            <MaterialCommunityIcons
-              name="calendar-weekend"
-              size={iconSize}
-              color={submitButtonColor}
-              style={{ alignSelf: "center" }}
-            />
-            <Text style={{ fontSize: textSize }}>{` `}Sunday</Text>
-          </View>
-          <Text style={styles.countText}>{ctArr[3] !== 0 ? ctArr[3] : ""}</Text>
-          {/* <MaterialIcons name="keyboard-arrow-right" size={iconSize} color={submitButtonColor} style={{alignSelf:'center'}} /> */}
-        </TouchableOpacity>
-        {/* <TouchableOpacity
-          style={styles.box}
-          onPress={() =>
-            navigation.navigate("Todo", {
-              title: "This Month",
-              type: "thismonth",
-            })
-          }
-        >
-          <View style={{ flexDirection: "row" }}>
-            <MaterialCommunityIcons
-              name="calendar-month"
-              size={iconSize}
-              color={submitButtonColor}
-              style={{ alignSelf: "center" }}
-            />
-            <Text style={{ fontSize: textSize }}>{` `}This Month</Text>
-          </View>
-          <Text style={styles.countText}>{ctArr[4] !== 0 ? ctArr[4] : ""}</Text>
-        </TouchableOpacity> */}
-        {/* <TouchableOpacity
-          style={styles.box}
-          onPress={() =>
-            navigation.navigate("Todo", {
-              title: "Month End",
-              type: "monthend",
-            })
-          }
-        >
-          <View style={{ flexDirection: "row" }}>
-            <Ionicons
-              name="ios-calendar"
-              size={iconSize}
-              color={submitButtonColor}
-              style={{ alignSelf: "center" }}
-            />
-            <Text style={{ fontSize: textSize }}>{` `}Month End</Text>
-          </View>
-          <Text style={styles.countText}>{ctArr[5] !== 0 ? ctArr[5] : ""}</Text>
-        </TouchableOpacity> */}
         <TouchableOpacity
           style={styles.box}
           onPress={() =>
@@ -311,6 +245,26 @@ const ListPage = ({ navigation }) => {
         </TouchableOpacity>
         <View style={{ flex: 1 }}>
           <Image source={Todo} style={styles.todoImg} />
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: "bold",
+              textAlign: "center",
+              marginTop: 15,
+            }}
+          >
+            Add Work List
+          </Text>
+          <Text
+            style={{
+              fontSize: 12,
+              fontWeight: "bold",
+              textAlign: "center",
+              paddingVertical: 15,
+            }}
+          >
+            Developer Ramesh
+          </Text>
         </View>
       </ScrollView>
     </View>
@@ -343,7 +297,7 @@ const styles = StyleSheet.create({
     height: 230,
     justifyContent: "center",
     alignSelf: "center",
-    marginTop: -20,
+    marginTop: 10,
     resizeMode: "contain",
   },
 })

@@ -5,6 +5,8 @@ import HomeScreen from "./Pages/HomeScreen"
 import BottomTab from "./Nav/BottomTab"
 import TodoDetails from "./Pages/TodoDetails"
 import PaymentDetails from "./Pages/PaymentList"
+import ChatScreen from "./Pages/ChatScreen"
+import Payment from "./Pages/Payment"
 
 const Stack = createStackNavigator()
 
@@ -24,6 +26,28 @@ const GlobalStack = () => {
         component={PaymentDetails}
         options={({ route }) => ({
           title: route.params.title,
+        })}
+      />
+      <Stack.Screen
+        name="Chat"
+        component={ChatScreen}
+        options={({ route }) => ({
+          title: "Chat",
+        })}
+      />
+      {/* current add payment method */}
+      <Stack.Screen
+        name="AddPay"
+        component={Payment}
+        options={({ route }) => ({
+          title: "New Payment",
+        })}
+      />
+      <Stack.Screen
+        name="addtodo"
+        component={HomeScreen}
+        options={({ route }) => ({
+          title: "New Payment",
         })}
       />
     </Stack.Navigator>

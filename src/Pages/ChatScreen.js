@@ -13,7 +13,6 @@ import {
   FlatList,
 } from "react-native"
 import { Audio } from "expo-av"
-import Voice from "@react-native-voice/voice"
 import * as Speech from "expo-speech"
 import { iconSize, submitButtonColor } from "../common/constant"
 import AsyncStorage from "@react-native-async-storage/async-storage"

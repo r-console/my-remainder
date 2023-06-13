@@ -1,5 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from "react"
 import {
+  Alert,
   Image,
   RefreshControl,
   ScrollView,
@@ -29,14 +30,12 @@ const ListPage = ({ navigation }) => {
   const [debtAmt, setDebtAmt] = useState(0)
   const [inAmt, setInAmt] = useState(0)
   useEffect(() => {
-    console.log("allCounts")
-    console.log(allCounts)
+    // console.log(allCounts)
   }, [allCounts])
 
   const getPayment = async () => {
     const jsonValue = await AsyncStorage.getItem("payment")
     const res = jsonValue != null ? JSON.parse(jsonValue) : []
-    console.log(res)
 
     let debt = 0
     let income = 0
@@ -48,9 +47,7 @@ const ListPage = ({ navigation }) => {
         income += parseInt(element.amt)
       }
     })
-    console.log(debt)
     setDebtAmt(debt)
-    console.log(income)
     setInAmt(income)
   }
 
@@ -65,19 +62,16 @@ const ListPage = ({ navigation }) => {
       // if(type === 'thismonth') setAllCounts({...allCounts, ThisMonthCount:res.length})
       // if(type === 'monthend') setAllCounts({...allCounts, MonthEndCount:res.length})
       // if(type === 'others') setAllCounts({...allCounts, OthersCount:res.length})
-      console.log(res.length)
       let arr = []
       arr = ctArr
       arr[index] = res.length
       setCtArr(arr)
-      console.log(ctArr)
     } catch (e) {
       // error reading value
     }
   }
 
   const callFun = () => {
-    console.log("counts")
     getDataCounts(0, "important")
     getDataCounts(1, "thisweek")
     getDataCounts(2, "saturday")
@@ -93,6 +87,10 @@ const ListPage = ({ navigation }) => {
     getPayment()
   }, [])
 
+  // delete button id
+  const [deleteShow, setDeleteShow] = useState(false)
+  const [refreshCount, setRefreshCount] = useState(0)
+
   const onRefresh = useCallback(() => {
     setRefreshing(true)
     setTimeout(() => {
@@ -102,39 +100,93 @@ const ListPage = ({ navigation }) => {
     }, 1000)
   }, [])
 
+  useEffect(() => {}, [refreshCount])
+
+  const deleteAllStorageData = async () =>
+    Alert.alert(
+      "Is It Done?",
+      "Are you sure to delete complete chat history?",
+      [
+        {
+          text: "No",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        {
+          text: "Yes",
+          onPress: async () => {
+            try {
+              await AsyncStorage.removeItem("chats")
+            } catch (err) {
+              console.log(err)
+            }
+          },
+        },
+      ]
+    )
+
   return (
     <View style={styles.container}>
+      {refreshCount === 6 && (
+        <View style={{ position: "absolute", bottom: 15, left: 15, zIndex: 9 }}>
+          <TouchableOpacity
+            style={{
+              backgroundColor: "#fff",
+              borderWidth: 1,
+              padding: 5,
+              borderRadius: 50,
+            }}
+            onPress={() => deleteAllStorageData()}
+          >
+            <MaterialIcons
+              name="delete"
+              size={20}
+              color={"#000"}
+              style={{ alignSelf: "center" }}
+            />
+          </TouchableOpacity>
+        </View>
+      )}
+      <View style={{ position: "absolute", bottom: 15, right: 15, zIndex: 9 }}>
+        <TouchableOpacity
+          style={{
+            backgroundColor: "#fff",
+            borderWidth: 1,
+            padding: 5,
+            borderRadius: 50,
+          }}
+          onPress={() => {
+            if (refreshCount === 6) {
+              setDeleteShow(false)
+              setRefreshCount(0)
+            } else {
+              setRefreshCount(refreshCount + 1)
+            }
+            onRefresh()
+          }}
+        >
+          <MaterialIcons
+            name="refresh"
+            size={20}
+            color={"#000"}
+            style={{ alignSelf: "center" }}
+          />
+        </TouchableOpacity>
+      </View>
       <View
         style={{
           position: "absolute",
-          bottom: 20,
+          bottom: 25,
           zIndex: 9,
           alignSelf: "center",
         }}
       >
         <TouchableOpacity
           style={{
-            backgroundColor: "#fff",
-            borderWidth: 1,
-            padding: 10,
-            borderRadius: 50,
-          }}
-          onPress={() => onRefresh()}
-        >
-          <MaterialIcons
-            name="refresh"
-            size={25}
-            color={"#000"}
-            style={{ alignSelf: "center" }}
-          />
-        </TouchableOpacity>
-      </View>
-      {/* <View style={{ position: "absolute", bottom: 15, right: 15, zIndex: 9 }}>
-        <TouchableOpacity
-          style={{
-            backgroundColor: "#fff",
+            backgroundColor: "#00ace6",
             borderWidth: 1,
             borderRadius: 50,
+            borderColor: "#999",
             padding: 10,
           }}
           onPress={() => navigation.navigate("Chat")}
@@ -142,11 +194,11 @@ const ListPage = ({ navigation }) => {
           <Ionicons
             name="md-chatbox-ellipses"
             size={25}
-            color={"#000"}
+            color={"#fff"}
             style={{ alignSelf: "center" }}
           />
         </TouchableOpacity>
-      </View> */}
+      </View>
       <ScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={

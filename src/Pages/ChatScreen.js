@@ -19,6 +19,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage"
 import { Ionicons } from "@expo/vector-icons"
 import Pay from "../../assets/pay.png"
 import { FontAwesome } from "@expo/vector-icons"
+import knowledgeBase from "../common/Knowledge_base.json"
 
 const Message = [
   {
@@ -98,69 +99,275 @@ const ChatScreen = () => {
     console.log(res)
   }
 
-  const Botmsg = ({ item }) => (
-    <View style={{ padding: 5, display: "flex" }} key={item.id}>
-      <TouchableOpacity
-        style={styles.botmsgbox}
-        onPress={() => MyResponse(item.message)}
+  // like python code
+  const [userLastInput, setUserLastInput] = useState("")
+  const [userInput, setUserInput] = useState("")
+  const [botResponse, setBotResponse] = useState("")
+  const [allMessages, setAllMessages] = useState([])
+
+  const [sent, setSent] = useState(false)
+
+  const loadKnowledgeBase = async () => {
+    try {
+      const jsonData = await AsyncStorage.getItem("chats")
+      const data = jsonData === null ? null : JSON.parse(jsonData)
+      console.log(data)
+      return data
+    } catch (error) {
+      console.error("Error loading knowledge base:", error)
+      return null
+    }
+  }
+
+  const findBestMatch = (userQuestion, questions) => {
+    const matches = questions.filter((question) =>
+      question.toLowerCase().includes(userQuestion.toLowerCase())
+    )
+
+    if (matches.length > 0) {
+      return matches[0]
+    }
+
+    return null
+  }
+
+  const getAnswerForQuestion = (question, knowledgeBase) => {
+    for (const q of knowledgeBase) {
+      if (q.question === question) {
+        return q.answer
+      }
+    }
+    return null
+  }
+
+  const saveKnowledgeBase = async (data) => {
+    try {
+      const jsonData = JSON.stringify(data)
+      await AsyncStorage.setItem("chats", jsonData)
+      console.log("Knowledge base saved successfully.")
+      let arr = allMessages
+      arr.push("Thank you. I learned new words!!")
+      setUserLastInput("")
+      setAllMessages(arr)
+    } catch (error) {
+      console.error("Error saving knowledge base:", error)
+    }
+  }
+
+  const addQuestionAndAnswer = async (question, answer) => {
+    let knowledgeBase = []
+    let checkNull = await loadKnowledgeBase()
+
+    if (checkNull === null) {
+      knowledgeBase.push({
+        question: question.toLowerCase(),
+        answer: answer,
+      })
+    } else {
+      knowledgeBase = await loadKnowledgeBase()
+      knowledgeBase.push({
+        question: question.toLowerCase(),
+        answer: answer,
+      })
+    }
+
+    saveKnowledgeBase(knowledgeBase)
+  }
+
+  const handleUserInput = async () => {
+    let uin = userInput
+    let arr = allMessages
+    arr.push(uin)
+    setAllMessages(arr)
+    setSent(true)
+    let knowledgeBase = await loadKnowledgeBase()
+    if (knowledgeBase != null) {
+      const bestMatch = findBestMatch(
+        uin,
+        knowledgeBase.map((q) => q.question)
+      )
+
+      if (bestMatch) {
+        const answer = getAnswerForQuestion(bestMatch, knowledgeBase)
+        let arr = allMessages
+        arr.push(answer)
+        setAllMessages(arr)
+      } else {
+        // when no match found in async storage
+        let arr = allMessages
+        arr.push(
+          "I don't know the answer. Can you teach me? Type '101' to skip or type answer"
+        )
+        setUserLastInput(uin)
+        setAllMessages(arr)
+      }
+    } else {
+      // first time : if there is no data in async storage
+      let arr = allMessages
+      arr.push("I don't know the answer. Can you teach me?")
+      setUserLastInput(uin)
+      setAllMessages(arr)
+    }
+    setUserInput("")
+  }
+
+  useEffect(() => {
+    const d = loadKnowledgeBase()
+    console.log(d)
+    if (sent) setSent(false)
+  }, [sent])
+
+  const handleTeachBot = () => {
+    let uin = userInput
+    if (uin == "101" || uin == "101 " || uin == 101) {
+      let arr = allMessages
+      arr.push(uin)
+      arr.push("You skipped")
+      setAllMessages(arr)
+      setSent(true)
+      setUserInput("")
+      setUserLastInput("")
+    } else {
+      let arr = allMessages
+      arr.push(uin)
+      setAllMessages(arr)
+      setSent(true)
+      addQuestionAndAnswer(userLastInput, uin)
+      setUserInput("")
+    }
+  }
+
+  const renderItem = ({ item, index }) => {
+    return index % 2 == 0 ? (
+      <View
+        style={{
+          width: "80%",
+          alignSelf: "flex-end",
+          marginBottom: 5,
+          justifyContent: "flex-end",
+        }}
+        key={index}
       >
-        <Text style={{ fontWeight: "600" }}>{item.message}</Text>
-      </TouchableOpacity>
-    </View>
-  )
+        <View style={{ width: "100%" }}>
+          <Text
+            style={{
+              alignSelf: "flex-end",
+              padding: 7,
+              borderWidth: 1,
+              borderRadius: 5,
+              borderColor: "#ccc",
+              backgroundColor: "#66e0ff",
+              elevation: 3,
+            }}
+          >
+            {item}
+          </Text>
+        </View>
+      </View>
+    ) : (
+      <View style={{ width: "80%" }} key={index}>
+        <View style={{ width: "100%" }}>
+          <Text
+            style={{
+              textAlign: "left",
+              alignSelf: "flex-start",
+              borderWidth: 1,
+              borderRadius: 5,
+              borderColor: "#ccc",
+              padding: 7,
+              marginBottom: 5,
+              backgroundColor: "#00ffcc",
+              elevation: 3,
+            }}
+          >
+            {item}
+          </Text>
+        </View>
+      </View>
+    )
+  }
+  const renderFooter = () => {
+    return <View style={{ height: 10 }}></View>
+  }
+
+  const renderHeader = () => {
+    return (
+      <View style={{ width: "80%" }}>
+        <View style={{ width: "100%" }}>
+          <Text
+            style={{
+              textAlign: "left",
+              alignSelf: "flex-start",
+              borderWidth: 1,
+              borderRadius: 5,
+              borderColor: "#ccc",
+              padding: 7,
+              marginBottom: 5,
+              backgroundColor: "#00ffcc",
+              elevation: 3,
+            }}
+          >
+            Welcome to the Chat Bot!!
+          </Text>
+        </View>
+      </View>
+    )
+  }
 
   return (
     <View style={styles.container}>
-      {/* <FlatList
+      <FlatList
         ref={(ref) => (FlatListRef = ref)}
-        data={Message}
-        inverted
-        // onContentSizeChange={() => FlatListRef.scrollToEnd()}
-        renderItem={({ item }) => <Botmsg item={item} />}
+        data={allMessages}
+        // inverted
+        onContentSizeChange={() => FlatListRef.scrollToEnd()}
+        renderItem={renderItem}
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
         initialNumToRender={3}
         maxToRenderPerBatch={5}
-        style={{ padding: 0, bottom: 65, marginTop: 60 }}
-      /> */}
-      <ScrollView>
+        style={{ padding: 10, bottom: 65, marginTop: 60 }}
+        ListHeaderComponent={renderHeader}
+        ListFooterComponent={renderFooter}
+      />
+      {/* <ScrollView>
         <View>
-          <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-            <Image
-              source={require("../../assets/favicon.png")}
-              style={{
-                width: 20,
-                height: 20,
-                borderRadius: 50,
-                borderWidth: 1,
-                borderColor: "#000",
-                margin: 2,
-              }}
-            />
-            <Text
-              style={{
-                alignSelf: "center",
-                fontWeight: "bold",
-                fontSize: 16,
-                marginLeft: 3,
-              }}
-            >
-              ChatBot
-            </Text>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              flexWrap: "wrap",
-              paddingHorizontal: 20,
-            }}
-          >
-            {Message.map((item, i) => (
-              <Botmsg item={item} key={i} />
-            ))}
-          </View>
+          {allMessages.map((item, i) => (
+            <>
+              <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+                <Image
+                  source={require("../../assets/favicon.png")}
+                  style={{
+                    width: 20,
+                    height: 20,
+                    borderRadius: 50,
+                    borderWidth: 1,
+                    borderColor: "#000",
+                    margin: 2,
+                  }}
+                />
+                <Text
+                  style={{
+                    alignSelf: "center",
+                    fontWeight: "bold",
+                    fontSize: 16,
+                    marginLeft: 3,
+                  }}
+                >
+                  ChatBot
+                </Text>
+              </View>
+              <View
+                style={{
+                  paddingHorizontal: 20,
+                }}
+              >
+                <Text style={{ fontWeight: "600" }}>{item}</Text>
+              </View>
+            </>
+          ))}
         </View>
-      </ScrollView>
+      </ScrollView> */}
       <View style={styles.chatBox}>
         <TextInput
           placeholder="Type message"
@@ -168,11 +375,28 @@ const ChatScreen = () => {
           autoCapitalize="none"
           style={{ flex: 1, padding: 0, fontSize: 16 }}
           multiline
+          value={userInput}
+          onChangeText={(val) => setUserInput(val)}
           //   onChangeText={(val) => hangleInputBox(val)}
         />
       </View>
+      {/* <Button onPress={handleUserInput} title="Submit" />
+      <Button onPress={handleTeachBot} title="Teach Me" /> */}
 
-      <TouchableOpacity style={styles.sendBox}>
+      <TouchableOpacity
+        style={styles.sendBox}
+        onPress={() => {
+          if (userInput != "") {
+            if (userLastInput === "") {
+              handleUserInput()
+            } else {
+              handleTeachBot()
+            }
+          } else {
+            ToastAndroid.show("Please type your message!", ToastAndroid.SHORT)
+          }
+        }}
+      >
         <FontAwesome
           name="send"
           size={20}

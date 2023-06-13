@@ -107,7 +107,7 @@ const HomeScreen = () => {
 
   const callFun = () => {
     console.log("counts")
-    getDataCounts(0, "today")
+    getDataCounts(0, "important")
     getDataCounts(1, "thisweek")
     getDataCounts(2, "saturday")
     getDataCounts(3, "sunday")

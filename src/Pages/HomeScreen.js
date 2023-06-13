@@ -15,7 +15,6 @@ import {
 import { buttonColor, submitButtonColor } from "../common/constant"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { useCallback, useContext, useEffect, useState } from "react"
-// import DatePicker, { getFormatedDate } from "react-native-modern-datepicker"
 import Todo from "../../assets/list.png"
 import { AuthContext } from "../../AuthProvider"
 
